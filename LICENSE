@@ -1,13 +1,22 @@
+Proprietary Software License (2026) – Brian Wesson
+
 Copyright (c) 2026 Brian Wesson
 
 All Rights Reserved.
 
-This repository, including all source code, scripts, documentation, images, designs, and other materials contained herein (the "Software"), is the exclusive property of Brian Wesson and is protected by copyright, trade secret, and other intellectual property laws.
+This repository, including all code, assets, smart contracts, documentation, and related materials (collectively, the "Software"), is proprietary and owned exclusively by Brian Wesson. 
 
-No part of this Software may be copied, reproduced, republished, uploaded, posted, transmitted, or distributed in any way, in whole or in part, without the express prior written permission of the author. This includes, but is not limited to, derivative works, modifications, or adaptations.
+Permission is **expressly denied** to any person or entity to use, copy, modify, merge, publish, distribute, sublicense, sell, or create derivative works of the Software in any form, for any purpose, without the express prior written permission of the author.
 
-The Software is provided “as is,” without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, or non-infringement. In no event shall Brian Wesson be liable for any claim, damages, or other liability arising from, out of, or in connection with the Software or its use.
+This includes, but is not limited to:
+1. **Use in Platforms or Websites:** You may not deploy the Software, in whole or in part, on any website, application, decentralized platform, smart contract network, or cloud service without explicit written consent.
+2. **Token or Cryptocurrency Integration:** The Software’s smart contracts, tokens (TIB, TIA), or related blockchain integrations may not be copied, cloned, or redistributed.
+3. **Reverse Engineering & Decompilation:** You may not reverse engineer, decompile, disassemble, or attempt to derive source code or logic from the Software.
+4. **Distribution:** You may not distribute copies of the Software in any medium, public repository, or private network, including forks or mirrors on GitHub or any other platform, without permission.
+5. **Commercial Use:** You may not use the Software, its components, or assets for commercial purposes without prior written consent, including but not limited to monetization, token swaps, or AI training platforms.
 
-By accessing or using this Software, you agree to comply with all applicable laws and regulations and to obtain prior written consent from the author for any use not expressly authorized herein.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Unauthorized use, copying, distribution, or modification of this Software is strictly prohibited and may result in civil and criminal penalties.
+Violation of this license may result in civil or criminal liability under copyright, intellectual property, and blockchain law.
+
+For inquiries, licensing requests, or permissions, please contact the author: **bwesson82@gmail.com**
