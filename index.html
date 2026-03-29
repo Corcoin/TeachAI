@@ -253,15 +253,10 @@ setInterval(() => {
     hashDisplay.innerHTML += hash + '<br>';
     hashRateSpan.innerText = (Math.random()*50+50).toFixed(2);
 },1000);
-<script>
-  const footer = document.createElement('footer');
-  footer.style = "background:#222;color:#ccc;text-align:center;padding:15px 10px;font-size:12px;";
-  footer.innerHTML = `
-    &copy; 2026 Brian Wesson. All Rights Reserved. <br>
-    This software and its contents are proprietary. No part of this code, website, smart contracts, or tokens may be copied, modified, distributed, or used in any manner without express written permission from the author. <br>
-    Contact: <a href="mailto:bwesson82@gmail.com" style="color:#4a90e2;text-decoration:none;">bwesson82@gmail.com</a>
-  `;
-  document.body.appendChild(footer);
-</script>
+<footer style="background:#222;color:#ccc;text-align:center;padding:15px 10px;font-size:12px;">
+  &copy; 2026 Brian Wesson. All Rights Reserved. <br>
+  This software and its contents are proprietary. No part of this code, website, smart contracts, or tokens may be copied, modified, distributed, or used in any manner without express written permission from the author. <br>
+  Contact: <a href="mailto:bwesson82@gmail.com" style="color:#4a90e2;text-decoration:none;">bwesson82@gmail.com</a>
+</footer>
 </body>
 </html>
