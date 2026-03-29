@@ -5,7 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TeachAI TIB Miner Pro</title>
-<script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+<!-- Use local ethers.js instead of CDN -->
+<script src="js/ethers.min.js"></script>
 <style>
   body { margin:0; font-family:sans-serif; background:#111; color:#eee; display:flex; flex-direction:column; min-height:100vh; }
   header { background:#222; padding:15px 30px; display:flex; justify-content:space-between; align-items:center;}
@@ -44,7 +45,6 @@
   <div id="dashboard" class="container hidden">
     <div class="flex">
       <div class="sidebar">
-
         <!-- Balances -->
         <div>
           <strong>Balances</strong>
@@ -90,7 +90,6 @@
           <button id="submitAI">Submit</button>
           <p>TIB Earned: <span id="aiTib">0</span></p>
         </div>
-
       </div>
 
       <div class="content">
@@ -113,7 +112,7 @@
 </footer>
 
 <script>
-const MINER_ADDRESS = "0xE4B954cfB2fda9AA60626B3B13E8A1Ca77C7e21d"; // replace with deployed contract
+const MINER_ADDRESS = "0xE4B954cfB2fda9AA60626B3B13E8A1Ca77C7e21d"; // deployed contract
 let provider, signer, minerContract;
 
 // --- UI Elements ---
@@ -135,21 +134,19 @@ const aiTibSpan = document.getElementById('aiTib');
 const chatInput = document.getElementById('chatInput');
 const chatMessages = document.getElementById('chatMessages');
 
-let tibBalance = 0, tiaBalance = 0, dailyMined = 0, aiTib = 0;
-const dailyCap = 2, tibPerMine = 0.01;
-const swapRate = 13.89;
+let tibBalance=0, tiaBalance=0, dailyMined=0, aiTib=0;
+const dailyCap=2, tibPerMine=0.01;
+const swapRate=13.89;
 
 // --- Connect Wallet ---
 async function connectWallet() {
     if(!window.ethereum) { alert("MetaMask not detected"); return; }
-
     try {
         await window.ethereum.request({ method: 'eth_requestAccounts' });
         provider = new ethers.providers.Web3Provider(window.ethereum);
         signer = provider.getSigner();
         const address = await signer.getAddress();
         walletStatus.innerText = `Connected: ${address}`;
-
         const abi = [
             "function mineTIB() public",
             "function swapTIBforTIA(uint256 tibAmount, uint256 tiaAmount) public",
@@ -158,14 +155,10 @@ async function connectWallet() {
             "function rewardAI(address worker, uint8 rating) external"
         ];
         minerContract = new ethers.Contract(MINER_ADDRESS, abi, signer);
-
         loginPage.classList.add('hidden');
         dashboard.classList.remove('hidden');
         updateBalances();
-    } catch(e) {
-        console.error(e);
-        alert("Wallet connection failed: " + e.message);
-    }
+    } catch(e) { console.error(e); alert("Wallet connection failed: "+e.message); }
 }
 document.getElementById('connectWallet').onclick = connectWallet;
 
