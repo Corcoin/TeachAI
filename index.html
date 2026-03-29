@@ -1,3 +1,4 @@
+<!-- TeachAI TIB Miner Pro - 2026 Brian Wesson -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,15 +12,17 @@
   header h1 { color:#4a90e2; margin:0; }
   button { padding:10px 20px; background:#4a90e2; border:none; border-radius:6px; cursor:pointer; color:#fff; font-size:16px; margin-top:10px;}
   button:hover { background:#357ABD; }
-  main { flex-grow:1; display:flex; justify-content:center; align-items:center; }
+  main { flex-grow:1; display:flex; justify-content:center; align-items:flex-start; padding:20px;}
   .hidden { display:none; }
-  .container { width:90%; max-width:1200px; }
-  .sidebar { width:300px; background:#1e1e1e; padding:20px; display:flex; flex-direction:column; overflow-y:auto; }
+  .container { width:100%; max-width:1200px; }
+  .sidebar { width:300px; background:#1e1e1e; padding:20px; display:flex; flex-direction:column; overflow-y:auto; margin-right:20px; }
   .content { flex-grow:1; padding:20px; display:flex; flex-direction:column; overflow:hidden; }
-  .hash-display, .ai-training-box, .chat-messages { background:#111; border:1px solid #333; border-radius:8px; padding:10px; margin-bottom:10px; font-family:monospace; overflow-y:auto; }
+  .hash-display, .ai-training-box, .chat-messages { background:#111; border:1px solid #333; border-radius:8px; padding:10px; margin-bottom:10px; font-family:monospace; overflow-y:auto; max-height:300px;}
   input[type="number"], input[type="text"], select { padding:6px; width:150px; margin-right:10px; }
   .hash-rate { font-size:14px; color:#4ae2a0; margin-bottom:10px; }
   .flex { display:flex; gap:20px; }
+  footer { background:#222;color:#ccc;text-align:center;padding:15px 10px;font-size:12px;margin-top:auto;}
+  a { color:#4a90e2; text-decoration:none; }
 </style>
 </head>
 <body>
@@ -103,8 +106,14 @@
   </div>
 </main>
 
+<footer>
+  &copy; 2026 Brian Wesson. All Rights Reserved. <br>
+  This software and its contents are proprietary. No part of this code, website, smart contracts, or tokens may be copied, modified, distributed, or used in any manner without express written permission from the author. <br>
+  Contact: <a href="mailto:bwesson82@gmail.com">bwesson82@gmail.com</a>
+</footer>
+
 <script>
-const MINER_ADDRESS = "YOUR_DEPLOYED_CONTRACT_ADDRESS"; // deployed TeachAIPlatform
+const MINER_ADDRESS = "0xE4B954cfB2fda9AA60626B3B13E8A1Ca77C7e21d"; // replace with deployed contract
 let provider, signer, minerContract;
 
 // --- UI Elements ---
@@ -128,34 +137,36 @@ const chatMessages = document.getElementById('chatMessages');
 
 let tibBalance = 0, tiaBalance = 0, dailyMined = 0, aiTib = 0;
 const dailyCap = 2, tibPerMine = 0.01;
-const swapRate = 13.89; // update if TIA/TIB price changes
+const swapRate = 13.89;
 
 // --- Connect Wallet ---
 async function connectWallet() {
-    if (!window.ethereum) return alert("MetaMask not detected");
+    if(!window.ethereum) { alert("MetaMask not detected"); return; }
 
-    await ethereum.request({ method: 'eth_requestAccounts' });
-    provider = new ethers.providers.Web3Provider(window.ethereum);
-    signer = provider.getSigner();
-    const address = await signer.getAddress();
-    walletStatus.innerText = `Connected: ${address}`;
+    try {
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        const address = await signer.getAddress();
+        walletStatus.innerText = `Connected: ${address}`;
 
-    const abi = [
-        "function mineTIB() public",
-        "function swapTIBforTIA(uint256 tibAmount, uint256 tiaAmount) public",
-        "function tibBalance(address user) view returns(uint256)",
-        "function tiaBalance(address user) view returns(uint256)",
-        "function rewardAI(address worker, uint8 rating) external"
-    ];
-    minerContract = new ethers.Contract(MINER_ADDRESS, abi, signer);
+        const abi = [
+            "function mineTIB() public",
+            "function swapTIBforTIA(uint256 tibAmount, uint256 tiaAmount) public",
+            "function tibBalance(address user) view returns(uint256)",
+            "function tiaBalance(address user) view returns(uint256)",
+            "function rewardAI(address worker, uint8 rating) external"
+        ];
+        minerContract = new ethers.Contract(MINER_ADDRESS, abi, signer);
 
-    loginPage.classList.add('hidden');
-    dashboard.classList.remove('hidden');
-
-    updateBalances();
+        loginPage.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+        updateBalances();
+    } catch(e) {
+        console.error(e);
+        alert("Wallet connection failed: " + e.message);
+    }
 }
-
-// Connect button
 document.getElementById('connectWallet').onclick = connectWallet;
 
 // --- Update Balances ---
@@ -177,46 +188,39 @@ document.getElementById('mineButton').onclick = async () => {
         await tx.wait();
         dailyMined += tibPerMine;
         updateBalances();
-        const hash = '0x' + Math.floor(Math.random()*1e16).toString(16).padStart(16,'0');
-        hashDisplay.innerHTML += hash + '<br>';
-    } catch(e) {
-        alert("Mining failed: "+e.message);
-    }
+        const hash = '0x'+Math.floor(Math.random()*1e16).toString(16).padStart(16,'0');
+        hashDisplay.innerHTML += hash+'<br>';
+    } catch(e) { alert("Mining failed: "+e.message); }
 };
 
 // --- Swap ---
-tibToSwapInput.addEventListener('input', () => {
+tibToSwapInput.addEventListener('input', ()=> {
     tiaEstimateSpan.innerText = ((parseFloat(tibToSwapInput.value)||0)*swapRate).toFixed(4);
 });
-
 document.getElementById('swapButton').onclick = async () => {
     const tibAmount = parseFloat(tibToSwapInput.value);
     if(!tibAmount || tibAmount>tibBalance) return alert("Invalid TIB amount");
-
     const tiaAmount = tibAmount*swapRate;
     const tx = await minerContract.swapTIBforTIA(
         ethers.utils.parseUnits(tibAmount.toString(),18),
         ethers.utils.parseUnits(tiaAmount.toString(),18)
     );
     await tx.wait();
-    tibToSwapInput.value='';
-    tiaEstimateSpan.innerText='0';
+    tibToSwapInput.value=''; tiaEstimateSpan.innerText='0';
     updateBalances();
 };
 
-// --- AI Training Reward ---
+// --- AI Training ---
 document.getElementById('askAI').onclick = () => {
     const question = aiQuestion.value.trim();
     if(!question) return alert("Enter a question");
     aiAnswerBox.innerText = `AI Answer: "${question.split(' ').reverse().join(' ')}"`;
 };
-
 document.getElementById('submitAI').onclick = async () => {
     const question = aiQuestion.value.trim();
     const rating = parseInt(aiRate.value);
     const correct = correctAnswer.value.trim();
     if(!question || !rating || !correct) return alert("Fill question, rating, and correct answer");
-
     try {
         const tx = await minerContract.rewardAI(await signer.getAddress(), rating);
         await tx.wait();
@@ -225,17 +229,14 @@ document.getElementById('submitAI').onclick = async () => {
         aiTibSpan.innerText = aiTib.toFixed(4);
         updateBalances();
         aiQuestion.value=''; aiRate.value=''; correctAnswer.value=''; aiAnswerBox.innerText='AI answer will appear here...';
-    } catch(e) {
-        alert("AI reward failed: "+e.message);
-    }
+    } catch(e) { alert("AI reward failed: "+e.message); }
 };
 
 // --- Chat ---
 document.getElementById('sendChat').onclick = () => {
     if(!chatInput.value) return;
     const msg = document.createElement('div'); msg.textContent = `[You] ${chatInput.value}`;
-    chatMessages.appendChild(msg);
-    chatInput.value='';
+    chatMessages.appendChild(msg); chatInput.value='';
     setTimeout(()=>{
         const reply = document.createElement('div');
         reply.textContent = `[AI Bot] Nice work! Keep mining TIB!`;
@@ -244,17 +245,13 @@ document.getElementById('sendChat').onclick = () => {
     },1500);
 };
 
-// --- Background Mining Hashes Display ---
-setInterval(() => {
-    const hash = '0x' + Math.floor(Math.random()*1e16).toString(16).padStart(16,'0');
-    hashDisplay.innerHTML += hash + '<br>';
+// --- Background Hash Display ---
+setInterval(()=> {
+    const hash = '0x'+Math.floor(Math.random()*1e16).toString(16).padStart(16,'0');
+    hashDisplay.innerHTML += hash+'<br>';
     hashRateSpan.innerText = (Math.random()*50+50).toFixed(2);
 },1000);
 </script>
-<footer style="background:#222; color:#aaa; text-align:center; padding:20px 10px; font-size:12px; border-top:1px solid #333;">
-  <p>© 2026 Brian Wesson. All Rights Reserved.</p>
-  <p>This software and its contents are proprietary. No part of this site, code, or materials may be copied, modified, distributed, or used without express written permission from the author.</p>
-  <p>Hosted on <a href="https://github.com" target="_blank" style="color:#4a90e2; text-decoration:none;">GitHub</a></p>
-</footer>
+
 </body>
 </html>
